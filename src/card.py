@@ -38,7 +38,7 @@ class Edition(Enum):
     FOIL = 1;
     MULT = 2;
     POLY = 3;
-    NEGATIVE = 4;
+    # NEGATIVE = 4;
 
 
 class Card:
@@ -48,3 +48,9 @@ class Card:
         self.edition = edition      # "Polychrome"
         self.enhancement = enhancement # "Glass"
         self.seal = seal # "Red Seal"
+
+    def get_edition_bonus(self):
+        if self.edition == Edition.FOIL: return 50, 0, 1.0   # +50 Chips
+        if self.edition == Edition.MULT: return 0, 10, 1.0   # +10 Mult
+        if self.edition == Edition.POLY: return 0, 0, 1.5    # x1.5 Mult
+        return 0, 0, 1.0

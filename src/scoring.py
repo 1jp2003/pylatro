@@ -29,3 +29,6 @@ class ScoringEngine:
     
     def level_up(self, hand_name):
         self.current_levels[hand_name] += 1
+
+    def calculate_final_score(self):
+        return
