@@ -18,6 +18,29 @@ class Rank(IntEnum):
     KING = 13;
     ACE = 14;
     
+class Enhancement(Enum):
+    BONUS = 1;
+    MULT = 2;
+    WILD = 3;
+    GLASS = 4;
+    STEEL = 5;
+    STONE = 6;
+    GOLD = 7;
+    LUCKY = 8;
+    
+class Seal(Enum):
+    RED = 1;
+    BLUE = 2;
+    GOLD = 3;
+    PURPLE = 4;
+    
+class Edition(Enum):
+    FOIL = 1;
+    MULT = 2;
+    POLY = 3;
+    NEGATIVE = 4;
+
+
 class Card:
     def __init__(self, rank, suit, edition=None, enhancement=None, seal=None):
         self.rank = rank
