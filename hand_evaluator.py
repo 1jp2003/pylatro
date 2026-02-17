@@ -9,6 +9,8 @@ class HandEvaluator:
         ranks = [c.rank.value for c in sorted_hand]
         suits = [c.suit for c in sorted_hand]
         count = sorted(Counter(ranks).values(), reverse=True)
+        # Count is used to find if we have the same type of card in our hand,
+        # for pairs / 3oak / 4oak / Full House / Flush House / 5oak / Flush 5 
         return ranks, suits, count
     
     def _is_straight(self, ranks):
@@ -20,11 +22,17 @@ class HandEvaluator:
     def _is_flush(self, suits):
         return len(set(suits)) == 1
     
+    def _is_flush_five(self, suits, count):
+        return self._is_flush(suits) & self._is_fiveoak(count)
+    
+    def _is_flush_house(self, suits, count):
+        return self._is_full_house(count) & self._is_flush(suits)
+    
     def _is_strush(self, suits, ranks): # straight flush
         return self._is_straight(ranks) & self._is_flush(suits)
     
     def _is_fiveoak(self, count):
-        return count[0] == 5 # first value of count should be 5
+        return count[0] == 5 
     
     def _is_full_house(self, count):
         return len(count) == 2 and count[0] == 3 and count[1] == 2
@@ -44,20 +52,20 @@ class HandEvaluator:
     def evaluate(self, hand):
         ranks, suits, count = self._process_hand(hand=hand)
         
-        is_flush = self._is_flush(suits=suits)
-        
-        is_straight = self._is_straight(ranks=ranks)
-        
-        is_straight_flush = self._is_strush(suits=suits, ranks=ranks)
+        is_flush_five = self._is_flush_five(suits=suits, count=count)
+        is_flush_house = self._is_flush_house(suits=suits, count=count)
         is_fiveoak = self._is_fiveoak(count=count)
+        is_straight_flush = self._is_strush(suits=suits, ranks=ranks)
+        is_flush = self._is_flush(suits=suits)
+        is_straight = self._is_straight(ranks=ranks)
         is_full_house = self._is_full_house(count=count)
         is_fouroak = self._is_fouroak(count=count)
         is_threeoak = self._is_threeoak(count=count)
         is_two_pair = self._is_two_pair(count=count)
         is_pair = self._is_pair(count=count)
         
-        if is_flush and is_fiveoak: return "Flush Five"
-        if is_flush and is_full_house: return "Flush House"
+        if is_flush_five: return "Flush Five"
+        if is_flush_house: return "Flush House"
         if is_fiveoak: return "Five of a Kind"
         if is_straight_flush: return "Straight Flush"
         if is_fouroak: return "Four of a Kind"
@@ -106,7 +114,7 @@ def test_evaluator():
 
     print("All specific tests passed!")
     
-def stress_test(iterations=1000):
+def stress_test(iterations=10000):
     evaluator = HandEvaluator()
     for _ in range(iterations):
         deck = Deck()
@@ -115,7 +123,9 @@ def stress_test(iterations=1000):
         evaluator.evaluate(hand)
     print(f"Successfully processed {iterations} random hands.")
     
-test_evaluator()
-stress_test()
+    
+if __name__ == "main":
+    test_evaluator()
+    stress_test()
 
 
