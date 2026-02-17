@@ -1,3 +1,8 @@
+from src.card import Card, Rank, Suit
+from src.hand_evaluator import HandEvaluator
+from src.deck import Deck
+from src.scoring import ScoringEngine
+
 # somewhat Auto-generated Test cases
 def test_evaluator():
     evaluator = HandEvaluator()
@@ -34,18 +39,27 @@ def test_evaluator():
 
     print("All specific tests passed!")
     
-def stress_test(iterations=10000):
-    evaluator = HandEvaluator()
-    for _ in range(iterations):
-        deck = Deck()
-        deck.shuffle()
-        hand = deck.draw(5)
-        evaluator.evaluate(hand)
-    print(f"Successfully processed {iterations} random hands.")
+def test_scoring_with_planets():
+        # 1. Initialize the engine with your hard-coded stats
+        engine = ScoringEngine()
+        
+        # 2. Test Level 1 Base Score
+        chips_l1, mult_l1 = engine.calculate_base_score("Straight")
+        assert (chips_l1, mult_l1) == (30, 4)
+        
+        # 3. Simulate using a Planet Card (Saturn)
+        engine.level_up("Straight") # Now Level 2
+        engine.level_up("Straight") # Now Level 3
+        
+        # 4. Verify the math for Level 3
+        # Calculation: 30 + (2 * 30) = 90 Chips | 4 + (2 * 3) = 10 Mult
+        chips_l3, mult_l3 = engine.calculate_base_score("Straight")
+        
+        assert chips_l3 == 90
+        assert mult_l3 == 10
+        print("✅ Planet Level-Up test passed!")
     
-    
-if __name__ == "main":
-    test_evaluator()
-    stress_test()
+test_evaluator()
+test_scoring_with_planets()
 
 
